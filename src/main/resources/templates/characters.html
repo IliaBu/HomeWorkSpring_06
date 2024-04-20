@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Rick and Morty Characters</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/4.0.0-2/css/bootstrap.min.css} "/>
+</head>
+<body>
+
+<h1>Список персонажей Rick and Morty</h1>
+<div class="filter-button-container">
+    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#FilterDialog">Фильтровать</button>
+    <a th:href="@{/}" class="btn btn-secondary">Сбросить фильтр</a>
+</div>
+
+<div class="modal fade" id="FilterDialog" tabindex="-1" role="dialog" aria-labelledby="DialogLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="DialogLabel">Фильтр персонажей</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <form th:action="@{/filter/result}" method="get" class="filter-form">
+                    <label for="name" class="form-label">Имя:</label>
+                    <input type="text" id="name" name="name" class="form-control">
+
+                    <label for="status" class="form-label">Статус:</label>
+                    <select id="status" name="status" class="form-select">
+                        <option value="">-- Выберите статус --</option>
+                        <option value="alive">Живой</option>
+                        <option value="dead">Мёртвый</option>
+                        <option value="unknown">Неизвестно</option>
+                    </select>
+
+                    <label for="species" class="form-label">Вид:</label>
+                    <input type="text" id="species" name="species" class="form-control">
+
+                    <label for="type" class="form-label">Тип:</label>
+                    <input type="text" id="type" name="type" class="form-control">
+
+                    <label for="gender" class="form-label">Пол:</label>
+                    <select id="gender" name="gender" class="form-select">
+                        <option value="">-- Выберите пол --</option>
+                        <option value="female">Женский</option>
+                        <option value="male">Мужской</option>
+                        <option value="genderless">Бесполый</option>
+                        <option value="unknown">Не известный</option>
+                    </select>
+                    <button type="submit" class="btn btn-success">Применить фильтр</button>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="pagination-links">
+    <a th:if="${prevPage}" th:href="@{/(page=${prevPage})}" class="btn btn-primary">Назад</a>
+    <a th:if="${nextPage}" th:href="@{/(page=${nextPage})}" class="btn btn-primary">Вперед</a>
+</div>
+
+<div class="characters-container">
+    <div th:each="character : ${characters}" class="characters-card">
+        <a data-toggle="modal" data-target="#CharacterDialog" th:data-Id="${character.id}">
+            <div class="characters-image">
+                <img th:src="${character.image}" alt="Изображение персонажа" style="max-width: 100%; height: auto;"/>
+            </div>
+            <div class="characters-details">
+                <span th:text="${character.name}"></span>
+            </div>
+        </a>
+        <div class="modal fade" id="CharacterDialog" tabindex="-1" role="dialog" aria-labelledby="DialogLabelCharacter"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="DialogLabelCharacter">Детали персонажа</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div th:if="${character != null}" class="character-card">
+                            <input type="hidden" id="character-id">
+                            <div class="character-image">
+                                <img id="character-image" th:src="${character.image}" alt="Изображение персонажа"/>
+                            </div>
+                            <div class="character-details">
+                                <p>Name: <span id="character-name" th:text="${character.name}"></span></p>
+                                <p>Status: <span id="character-status" th:text="${character.status}"></span></p>
+                                <p>Species: <span id="character-species" th:text="${character.species}"></span></p>
+                                <p>Type: <span id="character-type" th:text="${character.type}"></span></p>
+                                <p>Gender: <span id="character-gender" th:text="${character.gender}"></span></p>
+                            </div>
+                        </div>
+                        <div th:if="${character == null}">
+                            <p>Персонаж не найден</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="pagination-links">
+    <a th:if="${prevPage}" th:href="@{/(page=${prevPage})}" class="btn btn-primary">Назад</a>
+    <a th:if="${nextPage}" th:href="@{/(page=${nextPage})}" class="btn btn-primary">Вперед</a>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+
+<script>
+    $('#CharacterDialog').on('shown.bs.modal', function (event) {
+        let button = $(event.relatedTarget)
+        let Id = button.data('id')
+
+        if (Id) {
+            $.get({
+                url: '/api/' + Id,
+                success: (data) => {
+                    let modal = $(this)
+                    modal.find('#character-id').val(data.id)
+                    modal.find('#character-image').attr('src', data.image)
+                    modal.find('#character-name').text(data.name)
+                    modal.find('#character-status').text(data.status)
+                    modal.find('#character-species').text(data.species)
+                    modal.find('#character-type').text(data.type)
+                    modal.find('#character-gender').text(data.gender)
+                },
+                error: (err) => {
+                    alert(err);
+                }
+            });
+        }
+    })
+</script>
+
+</body>

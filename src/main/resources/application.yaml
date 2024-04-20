@@ -1,0 +1,10 @@
+server:
+  port: 7551
+spring:
+  application:
+    name: HomeWorkSpring_06
+external:
+  api:
+    url: https://rickandmortyapi.com/api/character
+pagination:
+  perPage: 50
