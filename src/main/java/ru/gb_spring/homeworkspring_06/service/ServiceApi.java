@@ -8,14 +8,14 @@ import ru.gb_spring.homeworkspring_06.domain.Result;
  */
 public interface ServiceApi {
 
-    public Characters getAllCharacters();
+    Characters getAllCharacters();
 
-    public Result getCharacterById(Integer id);
+    Result getCharacterById(Integer id);
 
-    public Characters getCharactersWithPage(String page);
+    Characters getCharactersWithPage(String page);
 
-    public int getPageNumberById(int id);
+    int getPageNumberById(int id);
 
-    public Characters getFilteredCharacters(String name, String status, String species, String type, String gender);
+    Characters getFilteredCharacters(String name, String status, String species, String type, String gender);
 
 }

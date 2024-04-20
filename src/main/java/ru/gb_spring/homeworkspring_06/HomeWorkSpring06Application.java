@@ -12,7 +12,7 @@ public class HomeWorkSpring06Application {
     @Bean
     public RestTemplate template(){
         return new RestTemplate();
-    };
+    }
 
     @Bean
     public HttpHeaders headers()
